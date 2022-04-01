@@ -1,0 +1,103 @@
+<!doctype html>
+<title>Example</title>
+<style>
+  * {
+    box-sizing: border-box; 
+  }
+  body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    margin: 0;
+  }
+  #main {
+    display: flex;
+    flex: 1;
+  }
+  #main > article {
+    flex: 1;
+    order: 1;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #main > aside {
+    flex: 0 0 20vw;
+  }
+  article > .newsBar {
+  	flex: 50%;
+    border: 1px solid;
+    flex-direction: row;
+    height: 100%;
+    max-width: 50%;
+    position: relative;
+  }
+  .newsBar > .newsImage {
+    width: 100%;
+    min-height: 250px;
+    border: 1px solid;
+  }
+  .newsBar > .heading {
+    text-transform: capitalize;
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .newsBar > .timeAndComment {
+      position: absolute;
+      bottom: 0px;
+  }
+  #main > aside {
+    flex: 0 0 20vw;
+  }
+  #main > nav {
+    border: 1px solid;
+    order: 3;
+  }
+  #main > aside {
+    border: 1px solid;
+    order: 2;
+  }
+  header, footer {
+    border: 1px solid;
+    height: 20vh;
+  }
+  header, footer, article, nav, aside {
+    padding: 1em;
+  }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<body>
+  <header></header>
+  <div id="main">
+    <article id="newsBarContainer">
+    </article>
+    <aside></aside>
+  </div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        const firstResponse = JSON.parse('[{"collectiontype": "landing", "collectionid" : "1" }, { "collectiontype": "landing", "collectionid":"2"}]');
+        const secondResponse = JSON.parse('[{"title": "live: Greg Inglis to announce nrl retirement", "imageUrl" : "", "intro": "Greg Inglis has arrived at South Sydney headquarters and will front a media conference later this morning to announce his retirement from rugby league", "published": "2m", "commentCount": "3" }, {"title": "live: Greg Inglis to announce nrl retirement", "imageUrl" : "", "intro": "Exclusive people are still unable to move back into almost half the apartments in Opal Tower more than three months after cracks appeared in the trouble-plagued", "published": "3m", "commentCount": "2" }]');
+        const promise = new Promise((resolve, reject) => {
+            resolve(firstResponse);
+        });
+        promise.then(res => {
+            const collectionids = res.map((res) => res.collectionid); // these collection id's we'll pass in another dependent api from where we'll get the further details
+            const promise2 = new Promise((resolve, reject) => {
+                resolve(secondResponse);
+            });
+            promise2.then(res => {
+                console.log(res, 'resttsstsad');
+                $.each(res, function(index, val){
+                    const html = '<div class="newsBar">'+
+                                '<div class="newsImage"><img alt="Image" src='+val.imageUrl+'></div>'+
+                                '<div class="heading">'+val.title+'</div>'+
+                                '<div class="description">'+val.intro+'</div>'+
+                                '<div class="timeAndComment">Posted On -'+val.published+' Comments - '+val.commentCount+'</div>'+
+                                '</div>';
+                    $('#newsBarContainer').append(html);
+                })
+            });
+        })
+    });
+</script>
+</html>
